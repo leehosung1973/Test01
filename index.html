@@ -248,17 +248,28 @@
     <footer>© 2026 홍길동</footer>
   </main>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="config.js" onerror="void 0"></script>
 <script>
-  // config.js가 있으면 그 값을, 없으면 아래 기본값을 사용합니다 (공개 키만 넣으세요)
+  // 브라우저에는 process.env가 없어서, 같은 역할을 config.js(없으면 아래 기본값)가 합니다.
+  // 공개 키(sb_publishable_...)만 넣으세요. 비밀 키는 절대 넣지 마세요.
   const CONFIG = window.SUPABASE_CONFIG || {
     url: "https://tbtycpsqogauivmrtmwg.supabase.co",
     publishableKey: "sb_publishable_qpADA_u6PPw5w_hMKcEoqw_b7JYbNoM"
   };
-  const SUPABASE_URL = CONFIG.url;
-  const SUPABASE_KEY = CONFIG.publishableKey;
-  const ENDPOINT = SUPABASE_URL + "/rest/v1/guestbook";
-  const HEADERS = { apikey: SUPABASE_KEY, "Content-Type": "application/json" };
+
+  const db = window.supabase ? window.supabase.createClient(CONFIG.url, CONFIG.publishableKey) : null;
+
+  async function saveGuest(name, message) {
+    return db.from("guestbook").insert({ name, message });
+  }
+
+  async function fetchGuests() {
+    return db.from("guestbook")
+      .select("name, message, created_at")
+      .order("created_at", { ascending: false })
+      .limit(50);
+  }
 
   const form = document.getElementById("gb-form");
   const nameInput = document.getElementById("gb-name");
@@ -270,6 +281,21 @@
   function setStatus(text, isError) {
     statusEl.textContent = text;
     statusEl.classList.toggle("error", !!isError);
+  }
+
+  function explain(error) {
+    console.error("Supabase 오류:", error);
+    const msg = (error && error.message) || "";
+    if (error && (error.code === "PGRST205" || error.code === "42P01")) {
+      return "guestbook 테이블이 없어요. Supabase에서 테이블을 먼저 만들어 주세요.";
+    }
+    if (error && (error.code === "42501" || /permission|policy|jwt|api key/i.test(msg))) {
+      return "권한이 없어요. 공개 키와 RLS 정책(읽기·쓰기)을 확인해 주세요.";
+    }
+    if (/failed to fetch|networkerror|load failed/i.test(msg)) {
+      return "Supabase에 연결하지 못했어요. claude.ai 미리보기에서는 막혀 있으니, 파일을 직접 호스팅한 주소나 내 컴퓨터에서 열어 주세요.";
+    }
+    return "오류가 발생했어요: " + (msg || "알 수 없는 오류");
   }
 
   function render(rows) {
@@ -298,33 +324,18 @@
     });
   }
 
-  // 실패 원인을 사람이 읽을 수 있는 문장으로 바꿉니다
-  async function explain(res, err) {
-    if (res) {
-      let body = {};
-      try { body = await res.json(); } catch (_) {}
-      console.error("Supabase 응답:", res.status, body);
-      if (body.code === "PGRST205" || res.status === 404) {
-        return "guestbook 테이블이 없어요. Supabase SQL Editor에서 테이블 생성 SQL을 먼저 실행해 주세요.";
-      }
-      if (res.status === 401 || res.status === 403 || body.code === "42501") {
-        return "권한이 없어요. 공개 키가 맞는지, RLS 정책(읽기·쓰기)을 만들었는지 확인해 주세요.";
-      }
-      return "서버 오류 (" + res.status + "): " + (body.message || "알 수 없는 오류");
-    }
-    console.error("네트워크 오류:", err);
-    return "Supabase에 연결하지 못했어요. claude.ai 미리보기에서는 막혀 있으니 파일을 직접 호스팅한 주소에서 열어 주세요.";
-  }
-
   async function loadEntries() {
-    let res;
+    if (!db) {
+      setStatus("Supabase 라이브러리를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.", true);
+      return;
+    }
     try {
-      res = await fetch(ENDPOINT + "?select=name,message,created_at&order=created_at.desc&limit=50", { headers: HEADERS });
-      if (!res.ok) throw new Error("HTTP " + res.status);
+      const { data, error } = await fetchGuests();
+      if (error) throw error;
       setStatus("");
-      render(await res.json());
+      render(data);
     } catch (err) {
-      setStatus(await explain(res && !res.ok ? res : null, err), true);
+      setStatus(explain(err), true);
     }
   }
 
@@ -333,21 +344,17 @@
     const name = nameInput.value.trim();
     const message = msgInput.value.trim();
     if (!name || !message) return;
+    if (!db) { loadEntries(); return; }
     submitBtn.disabled = true;
     setStatus("남기는 중…");
-    let res;
     try {
-      res = await fetch(ENDPOINT, {
-        method: "POST",
-        headers: { ...HEADERS, Prefer: "return=minimal" },
-        body: JSON.stringify({ name, message })
-      });
-      if (!res.ok) throw new Error("HTTP " + res.status);
+      const { error } = await saveGuest(name, message);
+      if (error) throw error;
       form.reset();
       setStatus("방명록을 남겼어요. 고맙습니다!");
       loadEntries();
     } catch (err) {
-      setStatus(await explain(res && !res.ok ? res : null, err), true);
+      setStatus(explain(err), true);
     } finally {
       submitBtn.disabled = false;
     }
