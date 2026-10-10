@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>홍길동 | 자기소개</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --ink: #14213d;
+    --muted: #4f5b73;
+    --line: #cfd6e2;
+    --accent: #2b55e6;
+    --accent-ink: #ffffff;
+    --mark: #ffe066;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1526;
+      --surface: #16203a;
+      --ink: #e9edf7;
+      --muted: #a4aec6;
+      --line: #2a3658;
+      --accent: #86a2ff;
+      --accent-ink: #0e1526;
+      --mark: #5a4a00;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1526;
+    --surface: #16203a;
+    --ink: #e9edf7;
+    --muted: #a4aec6;
+    --line: #2a3658;
+    --accent: #86a2ff;
+    --accent-ink: #0e1526;
+    --mark: #5a4a00;
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    font-size: 17px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+
+  /* Hero */
+  .hero { padding: clamp(64px, 14vw, 140px) 0 clamp(40px, 8vw, 80px); }
+  .hello { margin: 0 0 8px; color: var(--muted); font-size: 1.05rem; }
+  h1 {
+    margin: 0;
+    font-family: "Black Han Sans", "Noto Sans KR", sans-serif;
+    font-weight: 400;
+    font-size: clamp(5rem, 24vw, 11rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    word-break: keep-all;
+  }
+  h1 span {
+    background: linear-gradient(transparent 62%, var(--mark) 62%);
+    padding: 0 0.04em;
+  }
+  .tagline {
+    margin: 28px 0 0;
+    max-width: 30em;
+    font-size: clamp(1.15rem, 3.2vw, 1.4rem);
+    line-height: 1.6;
+    font-weight: 500;
+    word-break: keep-all;
+  }
+
+  /* Sections */
+  section { padding: 44px 0; border-top: 1px solid var(--line); }
+  h2 { margin: 0 0 20px; font-size: 1.3rem; font-weight: 700; }
+  p { margin: 0 0 1em; max-width: 36em; color: var(--ink); word-break: keep-all; }
+  p:last-child { margin-bottom: 0; }
+
+  .skills { display: flex; flex-wrap: wrap; gap: 10px; padding: 0; margin: 0; list-style: none; }
+  .skills li {
+    padding: 6px 16px;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .timeline { margin: 0; padding: 0; list-style: none; }
+  .timeline li {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .timeline li:last-child { border-bottom: 0; }
+  .year { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .timeline strong { display: block; font-weight: 700; }
+  .timeline span { color: var(--muted); font-size: 0.95rem; }
+
+  .contact a.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .links { margin: 20px 0 0; padding: 0; list-style: none; display: flex; gap: 22px; flex-wrap: wrap; }
+  .links a { color: var(--ink); text-underline-offset: 4px; text-decoration-thickness: 1.5px; }
+
+  /* Guestbook */
+  .gb-form { display: grid; gap: 12px; max-width: 36em; margin-bottom: 28px; }
+  .gb-form label { font-weight: 500; font-size: 0.95rem; }
+  .gb-form input, .gb-form textarea {
+    width: 100%;
+    margin-top: 4px;
+    padding: 10px 12px;
+    font: inherit;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+  }
+  .gb-form textarea { min-height: 96px; resize: vertical; }
+  .gb-form button {
+    justify-self: start;
+    padding: 12px 24px;
+    font: inherit;
+    font-weight: 700;
+    color: var(--accent-ink);
+    background: var(--accent);
+    border: 0;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .gb-form button:disabled { opacity: 0.6; cursor: default; }
+  .gb-status { min-height: 1.6em; margin: 0; font-size: 0.95rem; color: var(--muted); }
+  .gb-status.error { color: #c0392b; }
+  :root[data-theme="dark"] .gb-status.error { color: #ff8a80; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .gb-status.error { color: #ff8a80; } }
+  .gb-list { margin: 0; padding: 0; list-style: none; }
+  .gb-list li { padding: 14px 0; border-bottom: 1px solid var(--line); max-width: 36em; }
+  .gb-list li:last-child { border-bottom: 0; }
+  .gb-meta { display: flex; gap: 12px; align-items: baseline; }
+  .gb-meta strong { font-weight: 700; }
+  .gb-meta time { color: var(--muted); font-size: 0.85rem; }
+  .gb-msg { margin: 4px 0 0; white-space: pre-wrap; word-break: break-word; }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  a.btn:hover { filter: brightness(1.08); }
+
+  footer { padding: 32px 0 56px; color: var(--muted); font-size: 0.9rem; }
+
+  /* One entrance moment: the name */
+  @media (prefers-reduced-motion: no-preference) {
+    h1 span { animation: mark 0.9s 0.2s cubic-bezier(.2,.7,.2,1) both; background-size: 100% 100%; background-repeat: no-repeat; }
+    @keyframes mark { from { background-size: 0% 100%; } to { background-size: 100% 100%; } }
+  }
+
+  @media (max-width: 520px) {
+    body { font-size: 16px; }
+    .timeline li { grid-template-columns: 1fr; gap: 2px; }
+  }
+</style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <p class="hello">안녕하세요, 저는</p>
+      <h1><span>홍길동</span></h1>
+      <p class="tagline">사람들이 쓰기 편한 것을 만드는 웹 개발자입니다.</p>
+    </header>
+
+    <section id="about">
+      <h2>소개</h2>
+      <p>충남 당진에서 일하고 있는 개발자입니다. 복잡한 문제를 단순하게 풀어내는 일을 좋아하고, 만든 것이 누군가의 하루를 조금 편하게 만들 때 가장 보람을 느낍니다.</p>
+      <p>쉬는 날에는 동네 산책로를 걷거나 커피를 내리며 새로운 아이디어를 메모합니다.</p>
+    </section>
+
+    <section id="skills">
+      <h2>잘하는 것</h2>
+      <ul class="skills">
+        <li>웹 개발</li>
+        <li>UI 디자인</li>
+        <li>데이터 분석</li>
+        <li>문서 작성</li>
+        <li>팀 협업</li>
+      </ul>
+    </section>
+
+    <section id="history">
+      <h2>걸어온 길</h2>
+      <ul class="timeline">
+        <li>
+          <div class="year">2024 – 현재</div>
+          <div><strong>○○ 회사 개발자</strong><span>웹 서비스 개발 및 운영</span></div>
+        </li>
+        <li>
+          <div class="year">2021 – 2024</div>
+          <div><strong>△△ 스타트업 인턴 · 주니어</strong><span>첫 서비스 출시에 참여</span></div>
+        </li>
+        <li>
+          <div class="year">2017 – 2021</div>
+          <div><strong>□□대학교 컴퓨터공학 전공</strong><span>학사 졸업</span></div>
+        </li>
+      </ul>
+    </section>
+
+    <section id="guestbook">
+      <h2>방명록</h2>
+      <form class="gb-form" id="gb-form">
+        <label>이름
+          <input type="text" id="gb-name" maxlength="30" required autocomplete="nickname">
+        </label>
+        <label>한마디
+          <textarea id="gb-message" maxlength="300" required></textarea>
+        </label>
+        <button type="submit" id="gb-submit">남기기</button>
+        <p class="gb-status" id="gb-status" role="status"></p>
+      </form>
+      <ul class="gb-list" id="gb-list"></ul>
+    </section>
+
+    <section id="contact" class="contact">
+      <h2>연락하기</h2>
+      <p>함께 일하고 싶거나 궁금한 점이 있다면 편하게 메일 주세요.</p>
+      <p><a class="btn" href="mailto:hello@example.com">메일 보내기</a></p>
+      <ul class="links">
+        <li><a href="https://github.com/" rel="noopener">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/" rel="noopener">LinkedIn</a></li>
+        <li><a href="https://blog.naver.com/" rel="noopener">블로그</a></li>
+      </ul>
+    </section>
+
+    <footer>© 2026 홍길동</footer>
+  </main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js" onerror="void 0"></script>
+<script>
+  // 브라우저에는 process.env가 없어서, 같은 역할을 config.js(없으면 아래 기본값)가 합니다.
+  // 공개 키(sb_publishable_...)만 넣으세요. 비밀 키는 절대 넣지 마세요.
+  const CONFIG = window.SUPABASE_CONFIG || {
+    url: "https://tbtycpsqogauivmrtmwg.supabase.co",
+    publishableKey: "sb_publishable_qpADA_u6PPw5w_hMKcEoqw_b7JYbNoM"
+  };
+
+  const db = window.supabase ? window.supabase.createClient(CONFIG.url, CONFIG.publishableKey) : null;
+
+  async function saveGuest(name, message) {
+    return db.from("guestbook").insert({ name, message });
+  }
+
+  async function fetchGuests() {
+    return db.from("guestbook")
+      .select("name, message, created_at")
+      .order("created_at", { ascending: false })
+      .limit(50);
+  }
+
+  const form = document.getElementById("gb-form");
+  const nameInput = document.getElementById("gb-name");
+  const msgInput = document.getElementById("gb-message");
+  const submitBtn = document.getElementById("gb-submit");
+  const statusEl = document.getElementById("gb-status");
+  const listEl = document.getElementById("gb-list");
+
+  function setStatus(text, isError) {
+    statusEl.textContent = text;
+    statusEl.classList.toggle("error", !!isError);
+  }
+
+  function explain(error) {
+    console.error("Supabase 오류:", error);
+    const msg = (error && error.message) || "";
+    if (error && (error.code === "PGRST205" || error.code === "42P01")) {
+      return "guestbook 테이블이 없어요. Supabase에서 테이블을 먼저 만들어 주세요.";
+    }
+    if (error && (error.code === "42501" || /permission|policy|jwt|api key/i.test(msg))) {
+      return "권한이 없어요. 공개 키와 RLS 정책(읽기·쓰기)을 확인해 주세요.";
+    }
+    if (/failed to fetch|networkerror|load failed/i.test(msg)) {
+      return "Supabase에 연결하지 못했어요. claude.ai 미리보기에서는 막혀 있으니, 파일을 직접 호스팅한 주소나 내 컴퓨터에서 열어 주세요.";
+    }
+    return "오류가 발생했어요: " + (msg || "알 수 없는 오류");
+  }
+
+  function render(rows) {
+    listEl.textContent = "";
+    if (!rows.length) {
+      const li = document.createElement("li");
+      li.textContent = "아직 남겨진 글이 없어요. 첫 번째 방명록을 남겨 주세요.";
+      listEl.appendChild(li);
+      return;
+    }
+    rows.forEach((row) => {
+      const li = document.createElement("li");
+      const meta = document.createElement("div");
+      meta.className = "gb-meta";
+      const who = document.createElement("strong");
+      who.textContent = row.name;
+      const when = document.createElement("time");
+      when.dateTime = row.created_at;
+      when.textContent = new Date(row.created_at).toLocaleDateString("ko-KR");
+      meta.append(who, when);
+      const msg = document.createElement("p");
+      msg.className = "gb-msg";
+      msg.textContent = row.message;
+      li.append(meta, msg);
+      listEl.appendChild(li);
+    });
+  }
+
+  async function loadEntries() {
+    if (!db) {
+      setStatus("Supabase 라이브러리를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.", true);
+      return;
+    }
+    try {
+      const { data, error } = await fetchGuests();
+      if (error) throw error;
+      setStatus("");
+      render(data);
+    } catch (err) {
+      setStatus(explain(err), true);
+    }
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = nameInput.value.trim();
+    const message = msgInput.value.trim();
+    if (!name || !message) return;
+    if (!db) { loadEntries(); return; }
+    submitBtn.disabled = true;
+    setStatus("남기는 중…");
+    try {
+      const { error } = await saveGuest(name, message);
+      if (error) throw error;
+      form.reset();
+      setStatus("방명록을 남겼어요. 고맙습니다!");
+      loadEntries();
+    } catch (err) {
+      setStatus(explain(err), true);
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+
+  loadEntries();
+</script>
+</body>
+</html>
